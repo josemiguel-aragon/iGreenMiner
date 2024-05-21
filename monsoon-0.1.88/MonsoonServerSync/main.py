@@ -49,18 +49,18 @@ def startMeasurement():
 def endMeasurement():
     global start_measurement, end_time, elapsed_time, begin_time
     start_measurement = False
-    print("Ending measurement...")
+    
     
     ## End Monsoon sampling
     #HVengine.stopSampling()
     end_time = time.time()
     elapsed_time = end_time - begin_time
-    
     with open("./accuracy_test.csv", "a+") as file:
         file.write(f"{elapsed_time},")
     
+    print("Ending measurement...")
     return {"REQUEST": "GOOD"}
 
 if __name__ =='__main__':
-    run(host='192.168.1.100', port=8089, debug=True, server='paste')
+    run(host='192.168.1.100', port=8089, debug=False, server='paste')
     
