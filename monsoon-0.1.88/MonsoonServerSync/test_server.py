@@ -3,7 +3,7 @@ import requests, time
 config_ip = "localhost"
 
 if __name__ == '__main__':
-    for i in range(100):
+    for i in range(900):
         
         requests.get(f"http://{config_ip}:8089/startMeasurement")
         

@@ -56,11 +56,11 @@ def endMeasurement():
     end_time = time.time()
     elapsed_time = end_time - begin_time
     
-    with open("./accuracy_test.csv", "x") as file:
+    with open("./accuracy_test.csv", "a+") as file:
         file.write(f"{elapsed_time},")
     
     return {"REQUEST": "GOOD"}
 
 if __name__ =='__main__':
-    run(host='localhost', port=8089, debug=True, server='paste')
+    run(host='192.168.1.100', port=8089, debug=True, server='paste')
     
