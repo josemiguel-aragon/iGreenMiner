@@ -1,0 +1,6 @@
+swiftc -Onone -target arm64-apple-ios13.0 -emit-irgen -parse-as-library -Xfrontend 
+-disable-llvm-optzns -sdk $(xcrun -sdk iphoneos --show-sdk-path) \ main.swift -o helloworld.bc
+opt -O0 helloworld.bc -o helloworld_optimized.bc
+swiftc -Onone -target arm64-apple-ios13.0 -O0 -Xfrontend -disable-llvm-optzns -parse-as-library -sdk $(xcrun --sdk iphoneos 
+--show-sdk-path) helloworld_optimized.bc -o helloworld 
+codesign --force --sign C136C6E8686EF7867446EEFF3F362E8E6CD31B31 --entitlements DBDemo.app.xcent DBDemo.app
