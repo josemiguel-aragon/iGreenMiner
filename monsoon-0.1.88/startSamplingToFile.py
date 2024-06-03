@@ -10,7 +10,7 @@ print('Serial Number:' , Mon.getSerialNumber())
 
 HVengine = sampleEngine.SampleEngine(Mon)
 #Output to CSV
-HVengine.enableCSVOutput("../MonsoonOutput/StandardAPI_Navigation256m.csv")
+HVengine.enableCSVOutput("./StandardAPI_Navigation256m.csv")
 #Turning off periodic console outputs.
 HVengine.ConsoleOutput(True)
 
