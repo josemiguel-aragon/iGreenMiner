@@ -39,7 +39,11 @@ UIApplicationMain(
 
 ## Compilation
 
+Para compilar es importante emplear siempre el comando `xcrun` que se encuentra dentro del paquete Command-Line Tools de
+Xcode ya que nos permite seleccionar que SDK (sysroot) queremos emplear durante el proceso de compilacion. En nuestro 
+caso con la flag `-sdk iphoneos` indicamos que queramos emplear la toolchain de iOS.
 
+Posteriormente, necesitamos indicar que vamos a emplear el compilador de Swift, `swiftc` 
 
 ```Bash
     xcrun -sdk iphoneos swiftc $swift_opt -emit-irgen -module-name $bundle_name -Xfrontend -disable-llvm-optzns -target $HWtarget main.swift -o original.bc
