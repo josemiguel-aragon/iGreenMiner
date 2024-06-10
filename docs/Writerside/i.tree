@@ -8,4 +8,5 @@
 
     <toc-element topic="starter-topic.md"/>
     <toc-element topic="Compilation-and-deploy-process-of-a-iOS-App.md"/>
+    <toc-element topic="Measurement-synchronization.md"/>
 </instance-profile>
