@@ -11,6 +11,7 @@ import pandas as pd
 
 sample_rate = 5000
 start_measurement = False
+has_measurement = False
 begin_time = 0
 end_time = 0
 elapsed_time = sys.maxsize
@@ -53,7 +54,7 @@ def startMeasurement():
 
 @get('/endMeasurement')
 def endMeasurement():
-    global start_measurement, end_time, begin_time, sample_rate, energy_consumption, elapsed_time
+    global start_measurement, end_time, begin_time, sample_rate, energy_consumption, elapsed_time, has_measurement
 
     while not start_measurement:
         pass
@@ -90,6 +91,8 @@ def endMeasurement():
     energy_consumption = (currents * voltages * not_timestamps).sum() / 1000
 
     start_measurement = False
+    has_measurement = True
+    print(elapsed_time)
 
     print("Ending measurement...")
     return {"REQUEST": "GOOD"}
@@ -97,18 +100,19 @@ def endMeasurement():
 
 @get('/getMeasurement')
 def getMeasurement():
-    global elapsed_time, energy_consumption, start_measurement
+    global elapsed_time, energy_consumption, start_measurement, has_measurement
 
-    while start_measurement:
+    while not has_measurement:
         pass
 
-    obj1, obj2 = elapsed_time, energy_consumption
+    obj2, obj1 = elapsed_time, energy_consumption
 
     elapsed_time, energy_consumption = sys.maxsize, sys.maxsize
 
     print("Sending measurement...")
+    has_measurement = False
     return {"REQUEST": "GOOD", "EC": obj1, "RUNTIME": obj2}
 
 
 if __name__ == '__main__':
-    run(host='192.168.1.101', port=8089, debug=False, server='paste')
+    run(host='192.168.2.2', port=8089, debug=False, server='paste')

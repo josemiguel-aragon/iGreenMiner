@@ -214,7 +214,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             switch result {
             case .success(let firstData):
                 
-                for i in 1...1000 {
+                for i in 1...100 {
                     let randomInt = Int.random(in: 1..<2)
                     let n = "Bilal" + String(randomInt)
                     let a = randomInt
@@ -234,14 +234,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                             dateTimeString=formatter.string(from: currentDateTime)
                            print("Time after insertions: " + dateTimeString)
                             self?.db.delete()
+                            exit(0)
                             // Manejar los datos de la segunda solicitud
                         case .failure(let error):
                             print("Error: \(error.localizedDescription)")
+                            exit(1)
                         }
                 }
                 
             case .failure(let error):
                 print("Error: \(error.localizedDescription)")
+                exit(1)
             }
         }
 
@@ -269,7 +272,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // Método para la primera solicitud GET
     func fetchDataFromFirstAPI(completion: @escaping (Result<String, Error>) -> Void) {
-        let urlString = "http://192.168.1.101:8089/startMeasurement"
+        let urlString = "http://192.168.2.2:8089/startMeasurement"
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "URL no válida", code: 1, userInfo: nil)))
@@ -296,7 +299,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // Método para la segunda solicitud GET
     func fetchDataFromSecondAPI(completion: @escaping (Result<String, Error>) -> Void) {
-        let urlString = "http://192.168.1.101:8089/endMeasurement"
+        let urlString = "http://192.168.2.2:8089/endMeasurement"
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "URL no válida", code: 1, userInfo: nil)))
@@ -307,14 +310,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let task = urlSession.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
-                return
             }
             
             guard let data = data, let dataString = String(data: data, encoding: .utf8) else {
                 completion(.failure(NSError(domain: "Datos no válidos", code: 2, userInfo: nil)))
                 return
             }
-            
+
             completion(.success(dataString))
         }
         

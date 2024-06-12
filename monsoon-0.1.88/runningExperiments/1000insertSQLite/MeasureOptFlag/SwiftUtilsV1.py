@@ -2,6 +2,8 @@ import os
 import shutil
 import subprocess
 import sys
+import time
+
 import requests
 import json
 import numpy as np
@@ -9,12 +11,14 @@ import numpy as np
 class SwiftUtilsV1:
     def __init__(self, bundle_name: str = 'DBDemo', bundle_id: str = 'com.whatever.DBDemoabc',
                  base_dir: str = './compilationFolder/', target: str = 'arm64-apple-ios13.0',
-                 server_url: str = 'http://192.168.1.101:8089/'):
+                 server_url: str = 'http://192.168.2.2:8089/',
+                 dev_sign: str = 'D32D07084A1D478618629A115EC9CB1E7C515B3E'):
         self.bundle_name = bundle_name
         self.bundle_id = bundle_id
         self.base_dir = base_dir
         self.target = target
         self.server_url = server_url
+        self.dev_sign = dev_sign
 
     def generate_llvm_bitcode(self, swift_opt: str = '-Onone'):
         result = True
@@ -34,6 +38,7 @@ class SwiftUtilsV1:
         return result
 
     def apply_llvm_legacy_passes(self, passes: str = '-O3'):
+        result = True
         if os.path.exists(f'{self.base_dir}optimized.bc'):
             os.remove(f'{self.base_dir}optimized.bc')
         shutil.copy(f'{self.base_dir}original.bc', f'{self.base_dir}optimized.bc')
@@ -65,6 +70,10 @@ class SwiftUtilsV1:
         try:
             cmd.wait(timeout=20)
             if cmd.returncode != 0:
+                print(' '.join(['xcrun', '-sdk', 'iphoneos', 'swiftc', f'{swift_opt}', '-emit-executable', '-module-name',
+             f'{self.bundle_name}', '-Xfrontend', '-O0', '-Xfrontend', '-disable-llvm-optzns', '-target',
+             f'{self.target}',
+             f'{self.base_dir}optimized.bc', '-o', f'{self.base_dir}DBDemo']))
                 result = False
         except subprocess.TimeoutExpired as e:
             cmd.kill()
@@ -72,11 +81,10 @@ class SwiftUtilsV1:
             result = False
         return result
 
-    @staticmethod
-    def deploy_app():
+    def deploy_app(self):
         result = True
         cmd = subprocess.Popen(
-            ['bash', 'deploy_app.sh'],
+            ['bash', 'deploy_app.sh' , self.dev_sign],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         try:
             cmd.wait(timeout=60)
@@ -91,7 +99,7 @@ class SwiftUtilsV1:
     def launch_app(self):
         result = True
         cmd = subprocess.Popen(
-            ['ios-deploy', '-m', '--bundle-id', f'{self.bundle_id}', '-b',
+            ['ios-deploy', '-m', '--bundle_id', f'{self.bundle_id}', '-b',
              f'{self.base_dir}Payload/{self.bundle_name}.app', '-L', '-u'],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         try:
@@ -111,18 +119,34 @@ class SwiftUtilsV1:
         for i in range(number_of_runs):
             result = self.launch_app()
             if not result:
+                print("Deploy error")
                 return sys.maxsize, sys.maxsize
             else:
                 try:
-                    r = requests.get(f"{self.server_url}getMeasurement", timeout=25)
+                    # Wait a bit for app launch
+                    time.sleep(0.001)
+                    r = requests.get(f"{self.server_url}getMeasurement", timeout=120)
 
                     req_obj = json.loads(r.content)
 
                     ec_measurements.append(float(req_obj['EC']))
                     runtime_measurements.append(float(req_obj['RUNTIME']))
                 except requests.exceptions.Timeout as e:
+                    print(f'Error: {e}')
                     return sys.maxsize, sys.maxsize
 
-        return np.median(ec_measurements), np.median(runtime_measurements)
+        return np.median(ec_measurements), np.median(runtime_measurements), ec_measurements, runtime_measurements
 
+# Test Script
+if __name__ == '__main__':
+    swift = SwiftUtilsV1()
+    result = swift.generate_llvm_bitcode()
+    if result:
+        result = swift.apply_llvm_legacy_passes(passes='-O0')
+        if result:
+            result = swift.generate_app_binary(swift_opt='-Onone')
+            if result:
+                result = swift.deploy_app()
+                if result:
+                    print(swift.get_app_performance(number_of_runs=5))
 

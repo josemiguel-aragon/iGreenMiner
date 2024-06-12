@@ -153,5 +153,5 @@ Once installed, we can use the package with the following options to instruct th
 The complete command would be the following:
 
 ```Bash
-    ios-deploy -m --bundle-id $bundle_id -b Payload/$bundle_name.app -L -u
+    ios-deploy -m --bundle_id $bundle_id -b Payload/$bundle_name.app -L -u
 ```
