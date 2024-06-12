@@ -272,7 +272,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // Método para la primera solicitud GET
     func fetchDataFromFirstAPI(completion: @escaping (Result<String, Error>) -> Void) {
-        let urlString = "http://192.168.2.2:8089/startMeasurement"
+        let urlString = "http://192.168.0.194:8089/startMeasurement"
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "URL no válida", code: 1, userInfo: nil)))
@@ -299,7 +299,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     // Método para la segunda solicitud GET
     func fetchDataFromSecondAPI(completion: @escaping (Result<String, Error>) -> Void) {
-        let urlString = "http://192.168.2.2:8089/endMeasurement"
+        let urlString = "http://192.168.0.194:8089/endMeasurement"
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NSError(domain: "URL no válida", code: 1, userInfo: nil)))
