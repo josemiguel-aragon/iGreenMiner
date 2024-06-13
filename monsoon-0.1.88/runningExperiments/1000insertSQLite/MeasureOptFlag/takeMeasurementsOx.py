@@ -2,8 +2,8 @@ from SwiftUtilsV1 import SwiftUtilsV1
 import numpy as np
 
 
-config_swift_opt = '-Onone'
-config_llvm_passes = '-O2'
+config_swift_opt = '-Ounchecked'
+config_llvm_passes = '-O0'
 config_bench = 'insert100'
 config_number_of_runs = 100
 

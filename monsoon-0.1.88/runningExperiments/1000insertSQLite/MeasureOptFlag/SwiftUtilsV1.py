@@ -12,7 +12,7 @@ class SwiftUtilsV1:
     def __init__(self, bundle_name: str = 'DBDemo', bundle_id: str = 'com.whatever.DBDemoabc',
                  base_dir: str = './compilationFolder/', target: str = 'arm64-apple-ios13.0',
                  server_url: str = 'http://192.168.0.194:8089/',
-                 dev_sign: str = 'D32D07084A1D478618629A115EC9CB1E7C515B3E'):
+                 dev_sign: str = '934BE6C2D87A9926A4927696E84AD06D332967A2'):
         self.bundle_name = bundle_name
         self.bundle_id = bundle_id
         self.base_dir = base_dir

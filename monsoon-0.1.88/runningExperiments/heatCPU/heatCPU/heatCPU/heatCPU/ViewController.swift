@@ -26,7 +26,7 @@ class ViewController: UIViewController {
             }
         }
         //Stop the loop after 10 seconds
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 60){
             self.shouldStop = true
             exit(0)
         }
