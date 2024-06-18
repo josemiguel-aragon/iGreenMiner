@@ -9,7 +9,7 @@ import json
 import numpy as np
 
 class SwiftUtilsV1:
-    def __init__(self, bundle_name: str = 'DBDemo', bundle_id: str = 'com.whatever.DBDemoabc',
+    def __init__(self, bundle_name: str = 'DBDemo', bundle_id: str = 'com.ohvish.launching',
                  base_dir: str = './compilationFolder/', target: str = 'arm64-apple-ios13.0',
                  server_url: str = 'http://192.168.0.194:8089/',
                  dev_sign: str = '934BE6C2D87A9926A4927696E84AD06D332967A2'):
@@ -104,7 +104,7 @@ class SwiftUtilsV1:
         result = True
         cmd = subprocess.Popen(
             ['ios-deploy', '-m', '--bundle_id', f'{self.bundle_id}', '-b',
-             f'{self.base_dir}Payload/{self.bundle_name}.app', '-L', '-u'],
+             f'{self.base_dir}/launching.app', '-L', '-u'],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         try:
             cmd.wait(timeout=60)
@@ -122,6 +122,11 @@ class SwiftUtilsV1:
 
         for i in range(number_of_runs + 1):
             result = self.launch_app()
+            try:
+                r = requests.get(f"{self.server_url}startMeasurement", timeout=120)
+            except requests.exceptions.Timeout as e:
+                print(f'Error: {e}')
+                return sys.maxsize, sys.maxsize
             if not result:
                 print("Deploy error")
                 return sys.maxsize, sys.maxsize

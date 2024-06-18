@@ -13,18 +13,27 @@ import pandas as pd
 
 sample_rate = 5000
 has_measurement = False
-CPU_loop_threshold = 1600
+CPU_loop_threshold = 2000
 init_row = 1
 elapsed_time = sys.maxsize
 energy_consumption = sys.maxsize
+begin_time = time.time()
 
+
+@get('/startMeasurement')
+def startMeasurement():
+    global end_time
+    end_time = time.time()
+    print("Starting measurement...")
+    return {"REQUEST": "GOOD"}
 
 @get('/endMeasurement')
 def endMeasurement():
-    global energy_consumption, elapsed_time, has_measurement, init_row
+    global energy_consumption, elapsed_time, has_measurement, begin_time
 
-    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=init_row,
+    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=4000 * int(end_time - begin_time),
                      names=['Time(ms)', 'Main(mA)', 'Main Voltage(V)', ''])
+    begin_time = time.time()
 
     df.to_csv("./aux.csv", index=False)
 
@@ -40,15 +49,19 @@ def endMeasurement():
     df_cpuloop['diff'] = df_cpuloop.diff()['indexes']
     df_cpuloop.reset_index(inplace=True)
 
-    ordered = df_cpuloop[df_cpuloop['count'] > 25].sort_values(by=['diff'], ascending=False)
-    if ordered.empty or ordered.iloc[0]['diff'] < 1000:
+    #ordered = df_cpuloop[df_cpuloop['count'] > 25].sort_values(by=['diff'], ascending=False)
+    '''if ordered.empty or ordered.iloc[0]['diff'] < 1000:
         print("A")
         ordered2 = df_cpuloop.sort_values(by=['diff'], ascending=False)
-        ordered2 = ordered2[ordered2['diff'] > 2500]
+        ordered2 = ordered2[ordered2['diff'] > 500]
         index_2 = ordered2.iloc[-1]['indexes']
+        
     else:
         print("B")
         index_2 = ordered.iloc[0]['indexes']
+    '''
+    ordered2 = df_cpuloop.sort_values(by=['diff'], ascending=False)
+    index_2 = ordered2.iloc[0]['indexes']
 
     index_1 = df_cpuloop.iloc[df_cpuloop[df_cpuloop['indexes'] == index_2].index - 1]['indexes']
 
