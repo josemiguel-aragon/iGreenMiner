@@ -3,7 +3,7 @@ import numpy as np
 
 
 config_swift_opt = '-Ounchecked'
-config_llvm_passes = '-O3'
+config_llvm_passes = '-Oz'
 config_bench = 'insert1000'
 config_number_of_runs = 30
 
