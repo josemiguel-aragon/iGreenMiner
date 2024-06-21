@@ -31,7 +31,7 @@ def startMeasurement():
 def endMeasurement():
     global energy_consumption, elapsed_time, has_measurement, begin_time
 
-    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=4200 * int(end_time - begin_time),
+    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=4000 * int(end_time - begin_time),
                      names=['Time(ms)', 'Main(mA)', 'Main Voltage(V)', ''])
     begin_time = time.time()
 
@@ -44,11 +44,15 @@ def endMeasurement():
     voltages = df['Main Voltage(V)']
     not_timestamps = times.diff()
 
-    # SW run time in seconds (s)
-    elapsed_time = times.iloc[-1] - times.iloc[0]
+    try:
+        # SW run time in seconds (s)
+        elapsed_time = times.iloc[-1] - times.iloc[0]
 
-    # SW energy consumption in Joules (J)
-    energy_consumption = (currents * voltages * not_timestamps).sum() / 1000
+        # SW energy consumption in Joules (J)
+        energy_consumption = (currents * voltages * not_timestamps).sum() / 1000
+    except:
+        energy_consumption = sys.maxsize
+        elapsed_time = sys.maxsize
 
     df.to_csv("./signal.csv")
     df.drop(df.index, inplace=True)
