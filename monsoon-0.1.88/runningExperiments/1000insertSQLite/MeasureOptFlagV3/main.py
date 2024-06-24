@@ -31,7 +31,7 @@ def startMeasurement():
 def endMeasurement():
     global energy_consumption, elapsed_time, has_measurement, begin_time
 
-    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=4000 * int(end_time - begin_time),
+    df = pd.read_csv("./measurement.csv", delimiter=',', skiprows=3600 * int(end_time - begin_time),
                      names=['Time(ms)', 'Main(mA)', 'Main Voltage(V)', ''])
     begin_time = time.time()
 

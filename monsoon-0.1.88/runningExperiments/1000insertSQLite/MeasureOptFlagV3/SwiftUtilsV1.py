@@ -12,7 +12,7 @@ class SwiftUtilsV1:
     def __init__(self, bundle_name: str = 'DBDemo', bundle_id: str = 'com.ohvish.launching',
                  base_dir: str = './compilationFolder/', target: str = 'arm64-apple-ios13.0',
                  server_url: str = 'http://192.168.0.194:8089/',
-                 dev_sign: str = '702ED4DFB89DB30B00736F0B064543CF38DC6744'):
+                 dev_sign: str = '76DA80B76C8260498EA749CB1FDE0B19862055F3'):
         self.bundle_name = bundle_name
         self.bundle_id = bundle_id
         self.base_dir = base_dir
