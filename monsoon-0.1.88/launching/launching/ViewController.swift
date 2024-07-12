@@ -21,6 +21,30 @@ class ViewController: UIViewController {
             
             self.shouldStop = false
             
+            usleep(500000)
+            
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.5){
+                self.shouldStop = true
+            }
+            
+            while !self.shouldStop{
+                let _ = self.intensiveTask()
+            }
+            self.shouldStop = false
+            
+            usleep(500000)
+            
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.5){
+                self.shouldStop = true
+            }
+            
+            while !self.shouldStop{
+                let _ = self.intensiveTask()
+            }
+            self.shouldStop = false
+            
+            usleep(500000)
+            
             if let url = URL(string: "dbdemo://"){
                 if UIApplication.shared.canOpenURL(url){
                     UIApplication.shared.open(url, options: [:], completionHandler: {_ in
@@ -46,6 +70,31 @@ class ViewController: UIViewController {
             while !self.shouldStop{
                 let _ = self.intensiveTask()
             }
+            self.shouldStop = false
+            
+            usleep(500000)
+            
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.5){
+                self.shouldStop = true
+            }
+            
+            while !self.shouldStop{
+                let _ = self.intensiveTask()
+            }
+            self.shouldStop = false
+            
+            usleep(500000)
+            
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.5){
+                self.shouldStop = true
+            }
+            
+            while !self.shouldStop{
+                let _ = self.intensiveTask()
+            }
+            self.shouldStop = false
+            
+            usleep(500000)
             
             self.fetchDataFromSecondAPI { [weak self] result in
                 switch result {
