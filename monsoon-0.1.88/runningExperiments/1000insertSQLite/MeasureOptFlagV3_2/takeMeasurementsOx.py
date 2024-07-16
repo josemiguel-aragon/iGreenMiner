@@ -2,7 +2,7 @@ from SwiftUtilsV1 import SwiftUtilsV1
 import numpy as np
 
 
-config_swift_opt = '-Onone'
+config_swift_opt = '-O'
 config_llvm_passes = '-Oz'
 config_bench = 'insert1000poly'
 config_number_of_runs = 30
